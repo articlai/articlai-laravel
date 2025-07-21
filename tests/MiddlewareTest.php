@@ -2,17 +2,16 @@
 
 namespace Articlai\Articlai\Tests;
 
+use Articlai\Articlai\Http\Middleware\ArticlaiAuthentication;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Articlai\Articlai\Http\Middleware\ArticlaiAuthentication;
-use Articlai\Articlai\Exceptions\ArticlaiException;
 
 class MiddlewareTest extends TestCase
 {
     /** @test */
     public function it_allows_request_with_valid_api_key()
     {
-        $middleware = new ArticlaiAuthentication();
+        $middleware = new ArticlaiAuthentication;
         $request = Request::create('/test', 'GET');
         $request->headers->set('X-API-Key', 'test-api-key');
 
@@ -27,7 +26,7 @@ class MiddlewareTest extends TestCase
     /** @test */
     public function it_rejects_request_with_invalid_api_key()
     {
-        $middleware = new ArticlaiAuthentication();
+        $middleware = new ArticlaiAuthentication;
         $request = Request::create('/test', 'GET');
         $request->headers->set('X-API-Key', 'invalid-key');
 
@@ -41,7 +40,7 @@ class MiddlewareTest extends TestCase
     /** @test */
     public function it_rejects_request_without_api_key()
     {
-        $middleware = new ArticlaiAuthentication();
+        $middleware = new ArticlaiAuthentication;
         $request = Request::create('/test', 'GET');
 
         $response = $middleware->handle($request, function ($req) {
@@ -57,7 +56,7 @@ class MiddlewareTest extends TestCase
         // Temporarily remove the API key config
         config()->set('articlai-laravel.auth.api_key', null);
 
-        $middleware = new ArticlaiAuthentication();
+        $middleware = new ArticlaiAuthentication;
         $request = Request::create('/test', 'GET');
         $request->headers->set('X-API-Key', 'some-key');
 
@@ -66,7 +65,7 @@ class MiddlewareTest extends TestCase
         });
 
         $this->assertEquals(401, $response->getStatusCode());
-        
+
         // Restore the config for other tests
         config()->set('articlai-laravel.auth.api_key', 'test-api-key');
     }

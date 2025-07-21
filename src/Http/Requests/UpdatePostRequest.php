@@ -2,9 +2,9 @@
 
 namespace Articlai\Articlai\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 use Articlai\Articlai\Exceptions\ArticlaiException;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdatePostRequest extends FormRequest
@@ -41,7 +41,7 @@ class UpdatePostRequest extends FormRequest
             'canonical_url' => 'nullable|url|max:500',
             'published_at' => 'nullable|date',
             'custom_fields' => 'nullable|array',
-            'status' => 'nullable|string|in:' . implode(',', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
+            'status' => 'nullable|string|in:'.implode(',', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
         ];
     }
 
@@ -63,7 +63,7 @@ class UpdatePostRequest extends FormRequest
             'canonical_url.max' => 'Canonical URL must not exceed 500 characters',
             'published_at.date' => 'Published date must be a valid date',
             'custom_fields.array' => 'Custom fields must be an array',
-            'status.in' => 'Status must be one of: ' . implode(', ', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
+            'status.in' => 'Status must be one of: '.implode(', ', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
         ];
     }
 
@@ -81,9 +81,9 @@ class UpdatePostRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set published_at to current time if status is being changed to published and no date provided
-        if ($this->input('status') === 'published' && !$this->has('published_at')) {
+        if ($this->input('status') === 'published' && ! $this->has('published_at')) {
             $this->merge([
-                'published_at' => now()->toISOString()
+                'published_at' => now()->toISOString(),
             ]);
         }
 

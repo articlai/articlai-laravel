@@ -2,11 +2,11 @@
 
 namespace Articlai\Articlai;
 
+use Articlai\Articlai\Commands\ArticlaiCommand;
+use Articlai\Articlai\Http\Middleware\ArticlaiAuthentication;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Articlai\Articlai\Commands\ArticlaiCommand;
-use Articlai\Articlai\Http\Middleware\ArticlaiAuthentication;
 
 class ArticlaiServiceProvider extends PackageServiceProvider
 {
@@ -31,7 +31,7 @@ class ArticlaiServiceProvider extends PackageServiceProvider
         // Manually publish migrations to ensure correct path resolution
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../database/migrations/create_blogs.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_blogs.php'),
+                __DIR__.'/../database/migrations/create_blogs.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_blogs.php'),
             ], 'articlai-laravel-migrations');
         }
     }
@@ -46,7 +46,7 @@ class ArticlaiServiceProvider extends PackageServiceProvider
             'prefix' => config('articlai-laravel.api.prefix', 'api/articlai'),
             'middleware' => config('articlai-laravel.api.middleware', ['api', 'articlai.auth']),
         ], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         });
     }
 
@@ -54,13 +54,13 @@ class ArticlaiServiceProvider extends PackageServiceProvider
     {
         // Merge package config with application config
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/articlai-laravel.php',
+            __DIR__.'/../config/articlai-laravel.php',
             'articlai-laravel'
         );
 
         // Register the main service class
         $this->app->singleton(Articlai::class, function ($app) {
-            return new Articlai();
+            return new Articlai;
         });
 
         // Register the facade alias

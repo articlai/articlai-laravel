@@ -50,7 +50,7 @@ return [
         'sanitize_html' => env('ARTICLAI_SANITIZE_HTML', true),
         'allowed_html_tags' => [
             'p', 'br', 'strong', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre'
+            'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre',
         ],
     ],
 

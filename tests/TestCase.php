@@ -2,9 +2,9 @@
 
 namespace Articlai\Articlai\Tests;
 
+use Articlai\Articlai\ArticlaiServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Articlai\Articlai\ArticlaiServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -41,7 +41,7 @@ class TestCase extends Orchestra
         config()->set('articlai-laravel.platform.version', '1.0.0');
 
         // Run the migration
-        $migration = include __DIR__ . '/../database/migrations/create_blogs.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_blogs.php.stub';
         $migration->up();
     }
 }
