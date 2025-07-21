@@ -7,16 +7,6 @@
 
 A Laravel package that enables seamless integration with ArticlAI's Custom API connection type. This package provides secure API endpoints that allow ArticlAI to create, update, and delete blog posts in your Laravel application.
 
-## Features
-
-- **Secure Authentication**: Support for API Key, Bearer Token, and Basic Authentication
-- **Complete CRUD Operations**: Create, read, update, and delete blog posts
-- **Content Validation**: Comprehensive validation for all post fields
-- **HTML Sanitization**: Configurable HTML content sanitization for security
-- **Flexible Configuration**: Extensive configuration options for customization
-- **Database Integration**: Uses Eloquent models with proper relationships
-- **Testing Support**: Comprehensive test suite included
-
 ## Installation
 
 You can install the package via composer:
