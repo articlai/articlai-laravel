@@ -2,10 +2,10 @@
 
 namespace Articlai\Articlai\Http\Middleware;
 
+use Articlai\Articlai\Exceptions\ArticlaiException;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Articlai\Articlai\Exceptions\ArticlaiException;
 
 class ArticlaiAuthentication
 {
@@ -53,10 +53,8 @@ class ArticlaiAuthentication
             throw ArticlaiException::authenticationFailed('X-API-Key header is required');
         }
 
-        if (!hash_equals($expectedApiKey, $apiKey)) {
+        if (! hash_equals($expectedApiKey, $apiKey)) {
             throw ArticlaiException::authenticationFailed('Invalid API key');
         }
     }
-
-
 }

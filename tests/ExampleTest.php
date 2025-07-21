@@ -1,7 +1,6 @@
 <?php
 
 use Articlai\Articlai\Models\ArticlaiPost;
-use Articlai\Articlai\Http\Resources\PostResource;
 
 it('can create a post', function () {
     $postData = [
@@ -13,17 +12,17 @@ it('can create a post', function () {
     ];
 
     $response = $this->postJson('/api/articlai/posts', $postData, [
-        'X-API-Key' => 'test-api-key'
+        'X-API-Key' => 'test-api-key',
     ]);
 
     $response->assertStatus(201)
-            ->assertJsonStructure([
-                'id',
-                'url',
-                'title',
-                'status',
-                'created_at'
-            ]);
+        ->assertJsonStructure([
+            'id',
+            'url',
+            'title',
+            'status',
+            'created_at',
+        ]);
 
     $this->assertDatabaseHas('blogs', [
         'title' => 'Test Post',
@@ -33,23 +32,23 @@ it('can create a post', function () {
 
 it('can validate connection', function () {
     $response = $this->getJson('/api/articlai/validate', [
-        'X-API-Key' => 'test-api-key'
+        'X-API-Key' => 'test-api-key',
     ]);
 
     $response->assertStatus(200)
-            ->assertJson([
-                'success' => true,
-                'message' => 'Connection validated successfully',
-            ])
-            ->assertJsonStructure([
-                'success',
-                'message',
-                'platform_info' => [
-                    'name',
-                    'version',
-                    'capabilities'
-                ]
-            ]);
+        ->assertJson([
+            'success' => true,
+            'message' => 'Connection validated successfully',
+        ])
+        ->assertJsonStructure([
+            'success',
+            'message',
+            'platform_info' => [
+                'name',
+                'version',
+                'capabilities',
+            ],
+        ]);
 });
 
 it('requires authentication', function () {
@@ -63,15 +62,15 @@ it('requires authentication', function () {
 
 it('validates required fields', function () {
     $response = $this->postJson('/api/articlai/posts', [], [
-        'X-API-Key' => 'test-api-key'
+        'X-API-Key' => 'test-api-key',
     ]);
 
     $response->assertStatus(422)
-            ->assertJsonStructure([
-                'error',
-                'code',
-                'details'
-            ]);
+        ->assertJsonStructure([
+            'error',
+            'code',
+            'details',
+        ]);
 });
 
 it('can update a post', function () {
@@ -86,17 +85,17 @@ it('can update a post', function () {
     ];
 
     $response = $this->putJson("/api/articlai/posts/{$post->id}", $updateData, [
-        'X-API-Key' => 'test-api-key'
+        'X-API-Key' => 'test-api-key',
     ]);
 
     $response->assertStatus(200)
-            ->assertJsonStructure([
-                'id',
-                'url',
-                'title',
-                'status',
-                'updated_at'
-            ]);
+        ->assertJsonStructure([
+            'id',
+            'url',
+            'title',
+            'status',
+            'updated_at',
+        ]);
 
     $this->assertDatabaseHas('blogs', [
         'id' => $post->id,
@@ -108,14 +107,14 @@ it('can delete a post', function () {
     $post = ArticlaiPost::factory()->create();
 
     $response = $this->deleteJson("/api/articlai/posts/{$post->id}", [], [
-        'X-API-Key' => 'test-api-key'
+        'X-API-Key' => 'test-api-key',
     ]);
 
     $response->assertStatus(200)
-            ->assertJson([
-                'success' => true,
-                'message' => 'Post deleted successfully',
-            ]);
+        ->assertJson([
+            'success' => true,
+            'message' => 'Post deleted successfully',
+        ]);
 
     $this->assertDatabaseMissing('blogs', [
         'id' => $post->id,

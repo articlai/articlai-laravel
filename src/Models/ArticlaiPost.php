@@ -2,8 +2,8 @@
 
 namespace Articlai\Articlai\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class ArticlaiPost extends Model
@@ -69,7 +69,7 @@ class ArticlaiPost extends Model
         $counter = 1;
 
         while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -90,10 +90,10 @@ class ArticlaiPost extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
-                    ->where(function ($q) {
-                        $q->whereNull('published_at')
-                          ->orWhere('published_at', '<=', now());
-                    });
+            ->where(function ($q) {
+                $q->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            });
     }
 
     /**
@@ -102,7 +102,8 @@ class ArticlaiPost extends Model
     public function getUrlAttribute(): string
     {
         $baseUrl = config('app.url');
-        return rtrim($baseUrl, '/') . '/blog/' . $this->slug;
+
+        return rtrim($baseUrl, '/').'/blog/'.$this->slug;
     }
 
     /**

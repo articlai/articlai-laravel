@@ -25,7 +25,7 @@ class PostResource extends JsonResource
             'canonical_url' => $this->canonical_url,
             'status' => $this->status,
             'published_at' => $this->published_at?->toISOString(),
-            'custom_fields' => $this->custom_fields ?: new \stdClass(),
+            'custom_fields' => $this->custom_fields ?: new \stdClass,
             'created_at' => $this->created_at->toISOString(),
             'updated_at' => $this->updated_at->toISOString(),
         ];

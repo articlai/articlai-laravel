@@ -2,8 +2,8 @@
 
 namespace Articlai\Articlai\Commands;
 
-use Illuminate\Console\Command;
 use Articlai\Articlai\Models\ArticlaiPost;
+use Illuminate\Console\Command;
 
 class ArticlaiCommand extends Command
 {
@@ -55,11 +55,12 @@ class ArticlaiCommand extends Command
         $this->info("Recent Posts (last {$count}):");
 
         $posts = ArticlaiPost::orderBy('created_at', 'desc')
-                            ->limit($count)
-                            ->get(['id', 'title', 'status', 'created_at']);
+            ->limit($count)
+            ->get(['id', 'title', 'status', 'created_at']);
 
         if ($posts->isEmpty()) {
             $this->line('  No posts found');
+
             return;
         }
 
@@ -87,7 +88,7 @@ class ArticlaiCommand extends Command
         // Show all config values
         $config = config('articlai-laravel');
         $this->line('  Full Configuration:');
-        $this->line('    ' . json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $this->line('    '.json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         // Show environment variables
         $this->line('');
@@ -104,15 +105,15 @@ class ArticlaiCommand extends Command
 
         foreach ($envVars as $var) {
             $value = env($var);
-            $display = $value ? (strlen($value) > 20 ? substr($value, 0, 10) . '...' : $value) : 'not set';
+            $display = $value ? (strlen($value) > 20 ? substr($value, 0, 10).'...' : $value) : 'not set';
             $this->line("    {$var}: {$display}");
         }
 
         // Show Laravel version and environment
         $this->line('');
         $this->line('  Laravel Information:');
-        $this->line('    Laravel Version: ' . app()->version());
-        $this->line('    Environment: ' . app()->environment());
-        $this->line('    Config Cached: ' . (app()->configurationIsCached() ? 'yes' : 'no'));
+        $this->line('    Laravel Version: '.app()->version());
+        $this->line('    Environment: '.app()->environment());
+        $this->line('    Config Cached: '.(app()->configurationIsCached() ? 'yes' : 'no'));
     }
 }

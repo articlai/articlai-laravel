@@ -13,12 +13,12 @@ class ArticlaiPostFactory extends Factory
     public function definition(): array
     {
         $title = $this->faker->sentence(4);
-        
+
         return [
             'title' => $title,
             'content' => $this->faker->paragraphs(3, true),
             'excerpt' => $this->faker->sentence(10),
-            'slug' => Str::slug($title) . '-' . $this->faker->unique()->numberBetween(1, 1000),
+            'slug' => Str::slug($title).'-'.$this->faker->unique()->numberBetween(1, 1000),
             'meta_title' => $this->faker->sentence(6),
             'meta_description' => $this->faker->sentence(15),
             'focus_keyword' => $this->faker->word(),

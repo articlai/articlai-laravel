@@ -2,14 +2,14 @@
 
 namespace Articlai\Articlai\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
-use Articlai\Articlai\Models\ArticlaiPost;
+use Articlai\Articlai\Articlai;
+use Articlai\Articlai\Exceptions\ArticlaiException;
 use Articlai\Articlai\Http\Requests\CreatePostRequest;
 use Articlai\Articlai\Http\Requests\UpdatePostRequest;
 use Articlai\Articlai\Http\Resources\PostResource;
-use Articlai\Articlai\Exceptions\ArticlaiException;
-use Articlai\Articlai\Articlai;
+use Articlai\Articlai\Models\ArticlaiPost;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 
 class ArticlaiController extends Controller
 {
@@ -28,7 +28,7 @@ class ArticlaiController extends Controller
         try {
             return response()->json(PostResource::validation());
         } catch (\Exception $e) {
-            throw ArticlaiException::serverError('Validation failed: ' . $e->getMessage());
+            throw ArticlaiException::serverError('Validation failed: '.$e->getMessage());
         }
     }
 
@@ -51,7 +51,7 @@ class ArticlaiController extends Controller
         } catch (ArticlaiException $e) {
             return $e->render();
         } catch (\Exception $e) {
-            throw ArticlaiException::serverError('Failed to create post: ' . $e->getMessage());
+            throw ArticlaiException::serverError('Failed to create post: '.$e->getMessage());
         }
     }
 
@@ -62,11 +62,12 @@ class ArticlaiController extends Controller
     {
         try {
             $post = ArticlaiPost::findOrFail($id);
+
             return response()->json(new PostResource($post));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw ArticlaiException::notFound('Post');
         } catch (\Exception $e) {
-            throw ArticlaiException::serverError('Failed to retrieve post: ' . $e->getMessage());
+            throw ArticlaiException::serverError('Failed to retrieve post: '.$e->getMessage());
         }
     }
 
@@ -92,7 +93,7 @@ class ArticlaiController extends Controller
         } catch (ArticlaiException $e) {
             return $e->render();
         } catch (\Exception $e) {
-            throw ArticlaiException::serverError('Failed to update post: ' . $e->getMessage());
+            throw ArticlaiException::serverError('Failed to update post: '.$e->getMessage());
         }
     }
 
@@ -109,7 +110,7 @@ class ArticlaiController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw ArticlaiException::notFound('Post');
         } catch (\Exception $e) {
-            throw ArticlaiException::serverError('Failed to delete post: ' . $e->getMessage());
+            throw ArticlaiException::serverError('Failed to delete post: '.$e->getMessage());
         }
     }
 
@@ -120,6 +121,7 @@ class ArticlaiController extends Controller
     {
         try {
             $posts = ArticlaiPost::orderBy('created_at', 'desc')->paginate(15);
+
             return response()->json([
                 'data' => PostResource::collection($posts->items()),
                 'meta' => [
@@ -130,7 +132,7 @@ class ArticlaiController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
-            throw ArticlaiException::serverError('Failed to retrieve posts: ' . $e->getMessage());
+            throw ArticlaiException::serverError('Failed to retrieve posts: '.$e->getMessage());
         }
     }
 }

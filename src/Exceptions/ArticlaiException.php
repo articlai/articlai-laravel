@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 class ArticlaiException extends Exception
 {
     protected $details;
+
     protected $errorCode;
 
     public function __construct(
@@ -15,7 +16,7 @@ class ArticlaiException extends Exception
         array $details = [],
         string $errorCode = 'GENERAL_ERROR',
         int $code = 500,
-        Exception $previous = null
+        ?Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
         $this->details = $details;
@@ -97,7 +98,7 @@ class ArticlaiException extends Exception
             'code' => $this->errorCode,
         ];
 
-        if (!empty($this->details)) {
+        if (! empty($this->details)) {
             $response['details'] = $this->details;
         }
 

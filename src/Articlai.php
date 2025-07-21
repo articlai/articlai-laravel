@@ -11,17 +11,17 @@ class Articlai
      */
     public function sanitizeContent(string $content): string
     {
-        if (!config('articlai-laravel.content.sanitize_html', true)) {
+        if (! config('articlai-laravel.content.sanitize_html', true)) {
             return $content;
         }
 
         $allowedTags = config('articlai-laravel.content.allowed_html_tags', [
             'p', 'br', 'strong', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre'
+            'ul', 'ol', 'li', 'a', 'img', 'blockquote', 'code', 'pre',
         ]);
 
         // Basic HTML sanitization - in production, consider using a library like HTMLPurifier
-        $allowedTagsString = '<' . implode('><', $allowedTags) . '>';
+        $allowedTagsString = '<'.implode('><', $allowedTags).'>';
 
         return strip_tags($content, $allowedTagsString);
     }
@@ -60,6 +60,7 @@ class Articlai
     public function deletePost(int $id): bool
     {
         $post = ArticlaiPost::findOrFail($id);
+
         return $post->delete();
     }
 
@@ -87,7 +88,7 @@ class Articlai
         }
 
         return $query->orderBy('created_at', 'desc')
-                    ->paginate($filters['per_page'] ?? 15);
+            ->paginate($filters['per_page'] ?? 15);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Articlai\Articlai\Http\Controllers\ArticlaiController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +20,7 @@ Route::get('/validate', [ArticlaiController::class, 'validate'])
 
 // Content management endpoints
 Route::apiResource('posts', ArticlaiController::class, [
-    'parameters' => ['posts' => 'id']
+    'parameters' => ['posts' => 'id'],
 ])->names([
     'index' => 'articlai.posts.index',
     'store' => 'articlai.posts.store',
