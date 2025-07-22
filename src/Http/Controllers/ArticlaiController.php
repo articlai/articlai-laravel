@@ -45,7 +45,7 @@ class ArticlaiController extends Controller
 
             // Remove banner URLs from data before creating post
             $postData = collect($validatedData)->except([
-                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original'
+                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original',
             ])->toArray();
 
             // Sanitize content if enabled
@@ -98,7 +98,7 @@ class ArticlaiController extends Controller
 
             // Remove banner URLs from data before updating post
             $postData = collect($validatedData)->except([
-                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original'
+                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original',
             ])->toArray();
 
             // Sanitize content if enabled and content is being updated
@@ -109,7 +109,7 @@ class ArticlaiController extends Controller
             $post->update($postData);
 
             // Update banner image if provided
-            if ($bannerImageUrl && !app()->environment('testing')) {
+            if ($bannerImageUrl && ! app()->environment('testing')) {
                 // Clear existing banner media
                 $post->clearMediaCollection('banner');
                 // Add new banner image

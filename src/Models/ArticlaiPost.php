@@ -5,10 +5,10 @@ namespace Articlai\Articlai\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Image\Enums\Fit;
 
 class ArticlaiPost extends Model implements HasMedia
 {
@@ -143,7 +143,7 @@ class ArticlaiPost extends Model implements HasMedia
      */
     protected static function bootInteractsWithMedia()
     {
-        if (!app()->environment('testing')) {
+        if (! app()->environment('testing')) {
             static::bootInteractsWithMediaTrait();
         }
     }
@@ -161,7 +161,7 @@ class ArticlaiPost extends Model implements HasMedia
     /**
      * Register media conversions
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
             ->fit(Fit::Crop, 150, 150)
@@ -187,6 +187,7 @@ class ArticlaiPost extends Model implements HasMedia
         if (app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'large');
     }
 
@@ -198,6 +199,7 @@ class ArticlaiPost extends Model implements HasMedia
         if (app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'thumbnail');
     }
 
@@ -209,6 +211,7 @@ class ArticlaiPost extends Model implements HasMedia
         if (app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'medium');
     }
 
@@ -220,6 +223,7 @@ class ArticlaiPost extends Model implements HasMedia
         if (app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'large');
     }
 
@@ -231,6 +235,7 @@ class ArticlaiPost extends Model implements HasMedia
         if (app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner');
     }
 
@@ -249,9 +254,9 @@ class ArticlaiPost extends Model implements HasMedia
                 ->toMediaCollection('banner');
         } catch (\Exception $e) {
             // Log the error but don't fail the entire operation
-            \Log::warning('Failed to download banner image from URL: ' . $url, [
+            \Log::warning('Failed to download banner image from URL: '.$url, [
                 'error' => $e->getMessage(),
-                'post_id' => $this->id
+                'post_id' => $this->id,
             ]);
         }
     }
