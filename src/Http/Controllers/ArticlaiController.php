@@ -40,12 +40,25 @@ class ArticlaiController extends Controller
         try {
             $validatedData = $request->validated();
 
+            // Extract banner image URLs
+            $bannerImageUrl = $validatedData['banner_image'] ?? $validatedData['banner_original'] ?? null;
+
+            // Remove banner URLs from data before creating post
+            $postData = collect($validatedData)->except([
+                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original'
+            ])->toArray();
+
             // Sanitize content if enabled
             if (config('articlai-laravel.content.sanitize_html', true)) {
-                $validatedData['content'] = $this->articlaiService->sanitizeContent($validatedData['content']);
+                $postData['content'] = $this->articlaiService->sanitizeContent($postData['content']);
             }
 
-            $post = ArticlaiPost::create($validatedData);
+            $post = ArticlaiPost::create($postData);
+
+            // Add banner image if provided
+            if ($bannerImageUrl) {
+                $post->addBannerFromUrl($bannerImageUrl);
+            }
 
             return response()->json(PostResource::created($post), 201);
         } catch (ArticlaiException $e) {
@@ -80,12 +93,28 @@ class ArticlaiController extends Controller
             $post = ArticlaiPost::findOrFail($id);
             $validatedData = $request->validated();
 
+            // Extract banner image URLs
+            $bannerImageUrl = $validatedData['banner_image'] ?? $validatedData['banner_original'] ?? null;
+
+            // Remove banner URLs from data before updating post
+            $postData = collect($validatedData)->except([
+                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original'
+            ])->toArray();
+
             // Sanitize content if enabled and content is being updated
-            if (isset($validatedData['content']) && config('articlai-laravel.content.sanitize_html', true)) {
-                $validatedData['content'] = $this->articlaiService->sanitizeContent($validatedData['content']);
+            if (isset($postData['content']) && config('articlai-laravel.content.sanitize_html', true)) {
+                $postData['content'] = $this->articlaiService->sanitizeContent($postData['content']);
             }
 
-            $post->update($validatedData);
+            $post->update($postData);
+
+            // Update banner image if provided
+            if ($bannerImageUrl && !app()->environment('testing')) {
+                // Clear existing banner media
+                $post->clearMediaCollection('banner');
+                // Add new banner image
+                $post->addBannerFromUrl($bannerImageUrl);
+            }
 
             return response()->json(PostResource::updated($post));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

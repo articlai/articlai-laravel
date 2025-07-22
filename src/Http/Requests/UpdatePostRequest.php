@@ -42,6 +42,11 @@ class UpdatePostRequest extends FormRequest
             'published_at' => 'nullable|date',
             'custom_fields' => 'nullable|array',
             'status' => 'nullable|string|in:'.implode(',', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
+            'banner_image' => 'nullable|url',
+            'banner_thumbnail' => 'nullable|url',
+            'banner_medium' => 'nullable|url',
+            'banner_large' => 'nullable|url',
+            'banner_original' => 'nullable|url',
         ];
     }
 
@@ -61,6 +66,11 @@ class UpdatePostRequest extends FormRequest
             'focus_keyword.max' => 'Focus keyword must not exceed 100 characters',
             'canonical_url.url' => 'Canonical URL must be a valid URL',
             'canonical_url.max' => 'Canonical URL must not exceed 500 characters',
+            'banner_image.url' => 'Banner image must be a valid URL',
+            'banner_thumbnail.url' => 'Banner thumbnail must be a valid URL',
+            'banner_medium.url' => 'Banner medium must be a valid URL',
+            'banner_large.url' => 'Banner large must be a valid URL',
+            'banner_original.url' => 'Banner original must be a valid URL',
             'published_at.date' => 'Published date must be a valid date',
             'custom_fields.array' => 'Custom fields must be an array',
             'status.in' => 'Status must be one of: '.implode(', ', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),

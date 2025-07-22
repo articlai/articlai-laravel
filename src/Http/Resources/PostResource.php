@@ -26,6 +26,11 @@ class PostResource extends JsonResource
             'status' => $this->status,
             'published_at' => $this->published_at?->toISOString(),
             'custom_fields' => $this->custom_fields ?: new \stdClass,
+            'banner_image' => $this->banner_image,
+            'banner_thumbnail' => $this->banner_thumbnail,
+            'banner_medium' => $this->banner_medium,
+            'banner_large' => $this->banner_large,
+            'banner_original' => $this->banner_original,
             'created_at' => $this->created_at->toISOString(),
             'updated_at' => $this->updated_at->toISOString(),
         ];

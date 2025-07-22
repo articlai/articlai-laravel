@@ -19,6 +19,7 @@ You can publish and run the migrations with:
 
 ```bash
 php artisan vendor:publish --tag="articlai-laravel-migrations"
+php artisan vendor:publish --tag="medialibrary-migrations"
 php artisan migrate
 ```
 
@@ -56,6 +57,25 @@ PUT /api/articlai/posts/{id}      # Update a post
 DELETE /api/articlai/posts/{id}   # Delete a post
 ```
 
+### Banner Images
+
+The package supports banner images through Spatie Media Library integration. When creating or updating posts, you can include banner image URLs:
+
+```json
+{
+  "title": "Blog Post Title",
+  "content": "<p>Post content</p>",
+  "banner_image": "https://example.com/image.jpg",
+  "banner_original": "https://example.com/original.jpg"
+}
+```
+
+The package will automatically download and store the images, creating multiple conversions:
+- **thumbnail**: 150x150px (cropped)
+- **medium**: 300x300px (cropped)
+- **large**: 800x600px (cropped)
+- **original**: Original image
+
 ## Usage
 
 ### Using the Service Class
@@ -65,12 +85,13 @@ use Articlai\Articlai\Articlai;
 
 $articlai = app(Articlai::class);
 
-// Create a post
+// Create a post with banner image
 $post = $articlai->createPost([
     'title' => 'My Blog Post',
     'content' => '<p>This is the content</p>',
     'excerpt' => 'Post excerpt',
-    'status' => 'published'
+    'status' => 'published',
+    'banner_image' => 'https://example.com/banner.jpg'
 ]);
 
 // Update a post
@@ -106,6 +127,14 @@ $post = ArticlaiPost::create([
 
 // Get published posts
 $publishedPosts = ArticlaiPost::published()->get();
+
+// Access banner images
+$post = ArticlaiPost::find(1);
+echo $post->banner_image;      // Large version URL
+echo $post->banner_thumbnail;  // Thumbnail URL
+echo $post->banner_medium;     // Medium URL
+echo $post->banner_large;      // Large URL
+echo $post->banner_original;   // Original URL
 ```
 
 ## Command Line Interface
