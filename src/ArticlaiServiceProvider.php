@@ -33,6 +33,11 @@ class ArticlaiServiceProvider extends PackageServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations/create_blogs.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_blogs.php'),
             ], 'articlai-laravel-migrations');
+
+            // Manually publish config file to ensure it's available
+            $this->publishes([
+                __DIR__.'/../config/articlai-laravel.php' => config_path('articlai-laravel.php'),
+            ], 'articlai-laravel-config');
         }
     }
 

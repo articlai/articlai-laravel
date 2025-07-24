@@ -29,4 +29,21 @@ class ConfigTest extends TestCase
         config()->set('articlai-laravel.auth.api_key', 'new-test-key');
         $this->assertEquals('new-test-key', config('articlai-laravel.auth.api_key'));
     }
+
+    /** @test */
+    public function it_registers_config_for_publishing()
+    {
+        // Test that the config file is registered for publishing
+        $publishGroups = \Illuminate\Support\ServiceProvider::$publishGroups;
+
+        $this->assertArrayHasKey('articlai-laravel-config', $publishGroups);
+
+        $configFiles = $publishGroups['articlai-laravel-config'];
+        $this->assertNotEmpty($configFiles);
+
+        // Check that the source file exists
+        $sourceFile = array_keys($configFiles)[0];
+        $this->assertFileExists($sourceFile);
+        $this->assertStringContainsString('config/articlai-laravel.php', $sourceFile);
+    }
 }
