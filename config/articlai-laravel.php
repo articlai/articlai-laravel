@@ -70,6 +70,42 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Model Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure which model to use for blog posts and how to map fields
+    |
+    */
+    'model' => [
+        // The model class to use for blog posts
+        'class' => env('ARTICLAI_MODEL_CLASS', \Articlai\Articlai\Models\ArticlaiPost::class),
+
+        // Enable media support (requires spatie/laravel-medialibrary)
+        'enable_media' => env('ARTICLAI_ENABLE_MEDIA', true),
+
+        // URL prefix for blog post URLs (e.g., /blog/post-slug)
+        'url_prefix' => env('ARTICLAI_URL_PREFIX', 'blog'),
+
+        // Global field mapping (maps Articlai fields to your model fields)
+        // You can also define this per-model by adding an $articlaiFieldMapping property
+        'field_mapping' => [
+            'title' => 'title',
+            'content' => 'content',
+            'excerpt' => 'excerpt',
+            'slug' => 'slug',
+            'meta_title' => 'meta_title',
+            'meta_description' => 'meta_description',
+            'focus_keyword' => 'focus_keyword',
+            'canonical_url' => 'canonical_url',
+            'published_at' => 'published_at',
+            'custom_fields' => 'custom_fields',
+            'status' => 'status',
+            // 'banner_url' => 'featured_image_url', // Example: if you store banner URL in a field
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Database Configuration
     |--------------------------------------------------------------------------
     |

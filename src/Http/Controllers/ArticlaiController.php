@@ -7,17 +7,19 @@ use Articlai\Articlai\Exceptions\ArticlaiException;
 use Articlai\Articlai\Http\Requests\CreatePostRequest;
 use Articlai\Articlai\Http\Requests\UpdatePostRequest;
 use Articlai\Articlai\Http\Resources\PostResource;
-use Articlai\Articlai\Models\ArticlaiPost;
+use Articlai\Articlai\Services\ModelResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
 class ArticlaiController extends Controller
 {
     protected $articlaiService;
+    protected $modelResolver;
 
-    public function __construct(Articlai $articlaiService)
+    public function __construct(Articlai $articlaiService, ModelResolver $modelResolver)
     {
         $this->articlaiService = $articlaiService;
+        $this->modelResolver = $modelResolver;
     }
 
     /**
@@ -53,7 +55,7 @@ class ArticlaiController extends Controller
                 $postData['content'] = $this->articlaiService->sanitizeContent($postData['content']);
             }
 
-            $post = ArticlaiPost::create($postData);
+            $post = $this->modelResolver->create($postData);
 
             // Add banner image if provided
             if ($bannerImageUrl) {
@@ -74,7 +76,7 @@ class ArticlaiController extends Controller
     public function show(string $id): JsonResponse
     {
         try {
-            $post = ArticlaiPost::findOrFail($id);
+            $post = $this->modelResolver->findOrFail($id);
 
             return response()->json(new PostResource($post));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -90,7 +92,7 @@ class ArticlaiController extends Controller
     public function update(UpdatePostRequest $request, string $id): JsonResponse
     {
         try {
-            $post = ArticlaiPost::findOrFail($id);
+            $post = $this->modelResolver->findOrFail($id);
             $validatedData = $request->validated();
 
             // Extract banner image URLs
@@ -106,12 +108,14 @@ class ArticlaiController extends Controller
                 $postData['content'] = $this->articlaiService->sanitizeContent($postData['content']);
             }
 
-            $post->update($postData);
+            $post = $this->modelResolver->update($post, $postData);
 
             // Update banner image if provided
             if ($bannerImageUrl && !app()->environment('testing')) {
-                // Clear existing banner media
-                $post->clearMediaCollection('banner');
+                // Clear existing banner media if the model supports it
+                if (method_exists($post, 'clearMediaCollection')) {
+                    $post->clearMediaCollection('banner');
+                }
                 // Add new banner image
                 $post->addBannerFromUrl($bannerImageUrl);
             }
@@ -132,8 +136,8 @@ class ArticlaiController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $post = ArticlaiPost::findOrFail($id);
-            $post->delete();
+            $post = $this->modelResolver->findOrFail($id);
+            $this->modelResolver->delete($post);
 
             return response()->json(PostResource::deleted());
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -149,7 +153,7 @@ class ArticlaiController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $posts = ArticlaiPost::orderBy('created_at', 'desc')->paginate(15);
+            $posts = $this->modelResolver->paginate(15);
 
             return response()->json([
                 'data' => PostResource::collection($posts->items()),

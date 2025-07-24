@@ -2,6 +2,8 @@
 
 namespace Articlai\Articlai\Models;
 
+use Articlai\Articlai\Contracts\ArticlaiConnectable;
+use Articlai\Articlai\Traits\ArticlaiConnector;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -10,9 +12,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Image\Enums\Fit;
 
-class ArticlaiPost extends Model implements HasMedia
+class ArticlaiPost extends Model implements HasMedia, ArticlaiConnectable
 {
     use HasFactory;
+    use ArticlaiConnector;
     use InteractsWithMedia {
         InteractsWithMedia::bootInteractsWithMedia as protected bootInteractsWithMediaTrait;
     }
@@ -66,60 +69,16 @@ class ArticlaiPost extends Model implements HasMedia
         });
     }
 
-    /**
-     * Generate a unique slug from the title
-     */
-    public function generateUniqueSlug(string $title): string
-    {
-        $slug = Str::slug($title);
-        $originalSlug = $slug;
-        $counter = 1;
 
-        while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
-            $slug = $originalSlug.'-'.$counter;
-            $counter++;
-        }
 
-        return $slug;
-    }
 
-    /**
-     * Scope to filter by status
-     */
-    public function scopeByStatus($query, string $status)
-    {
-        return $query->where('status', $status);
-    }
-
-    /**
-     * Scope to filter published posts
-     */
-    public function scopePublished($query)
-    {
-        return $query->where('status', 'published')
-            ->where(function ($q) {
-                $q->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            });
-    }
 
     /**
      * Get the URL for this post (can be overridden in implementation)
      */
     public function getUrlAttribute(): string
     {
-        $baseUrl = config('app.url');
-
-        return rtrim($baseUrl, '/').'/blog/'.$this->slug;
-    }
-
-    /**
-     * Check if the post is published
-     */
-    public function isPublished(): bool
-    {
-        return $this->status === 'published' &&
-               ($this->published_at === null || $this->published_at <= now());
+        return $this->getUrl();
     }
 
     /**

@@ -63,6 +63,11 @@ class ArticlaiServiceProvider extends PackageServiceProvider
             return new Articlai;
         });
 
+        // Register the model resolver service
+        $this->app->singleton(\Articlai\Articlai\Services\ModelResolver::class, function ($app) {
+            return new \Articlai\Articlai\Services\ModelResolver;
+        });
+
         // Register the facade alias
         $this->app->alias(Articlai::class, 'articlai');
     }
