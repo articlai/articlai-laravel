@@ -6,16 +6,15 @@ use Articlai\Articlai\Contracts\ArticlaiConnectable;
 use Articlai\Articlai\Traits\ArticlaiConnector;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class ArticlaiPost extends Model implements HasMedia, ArticlaiConnectable
+class ArticlaiPost extends Model implements ArticlaiConnectable, HasMedia
 {
-    use HasFactory;
     use ArticlaiConnector;
+    use HasFactory;
     use InteractsWithMedia {
         InteractsWithMedia::bootInteractsWithMedia as protected bootInteractsWithMediaTrait;
     }
@@ -68,10 +67,6 @@ class ArticlaiPost extends Model implements HasMedia, ArticlaiConnectable
             }
         });
     }
-
-
-
-
 
     /**
      * Get the URL for this post (can be overridden in implementation)

@@ -27,7 +27,7 @@ class ModelResolver
 
         // Generate slug if not provided and title is available
         $articlaiData = $model->getArticlaiData();
-        if (empty($articlaiData['slug']) && !empty($articlaiData['title'])) {
+        if (empty($articlaiData['slug']) && ! empty($articlaiData['title'])) {
             $mapping = $model->getArticlaiFieldMapping();
             $slugField = $mapping['slug'] ?? 'slug';
             $slug = $model->generateUniqueSlug($articlaiData['title']);
@@ -103,16 +103,16 @@ class ModelResolver
      */
     protected function validateModelClass(): void
     {
-        if (!class_exists($this->modelClass)) {
+        if (! class_exists($this->modelClass)) {
             throw ArticlaiException::serverError("Configured model class '{$this->modelClass}' does not exist.");
         }
 
-        if (!is_subclass_of($this->modelClass, Model::class)) {
+        if (! is_subclass_of($this->modelClass, Model::class)) {
             throw ArticlaiException::serverError("Configured model class '{$this->modelClass}' must extend Illuminate\\Database\\Eloquent\\Model.");
         }
 
         // Check if the model implements the ArticlaiConnectable interface
-        if (!in_array(ArticlaiConnectable::class, class_implements($this->modelClass))) {
+        if (! in_array(ArticlaiConnectable::class, class_implements($this->modelClass))) {
             throw ArticlaiException::serverError("Configured model class '{$this->modelClass}' must implement ArticlaiConnectable interface.");
         }
     }

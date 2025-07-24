@@ -145,7 +145,7 @@ trait ArticlaiConnector
         $modelClass = get_class($this);
         $configMapping = config("articlai-laravel.model.field_mapping.{$modelClass}", []);
 
-        if (!empty($configMapping)) {
+        if (! empty($configMapping)) {
             return array_merge($this->getDefaultFieldMapping(), $configMapping);
         }
 
@@ -189,13 +189,14 @@ trait ArticlaiConnector
      */
     public function addBannerFromUrl(string $url): void
     {
-        if (!$this->hasMediaSupport()) {
+        if (! $this->hasMediaSupport()) {
             // Store URL in a banner_url field if it exists
             $mapping = $this->getArticlaiFieldMapping();
             if (isset($mapping['banner_url'])) {
                 $this->setAttribute($mapping['banner_url'], $url);
                 $this->save();
             }
+
             return;
         }
 
@@ -208,10 +209,10 @@ trait ArticlaiConnector
             $this->addMediaFromUrl($url)
                 ->toMediaCollection('banner');
         } catch (\Exception $e) {
-            \Log::warning('Failed to download banner image from URL: ' . $url, [
+            \Log::warning('Failed to download banner image from URL: '.$url, [
                 'error' => $e->getMessage(),
                 'model_id' => $this->getKey(),
-                'model_class' => get_class($this)
+                'model_class' => get_class($this),
             ]);
         }
     }
@@ -221,12 +222,13 @@ trait ArticlaiConnector
      */
     public function getBannerImage(): ?string
     {
-        if (!$this->hasMediaSupport()) {
+        if (! $this->hasMediaSupport()) {
             // Try to get from banner_url field
             $mapping = $this->getArticlaiFieldMapping();
             if (isset($mapping['banner_url'])) {
                 return $this->getAttribute($mapping['banner_url']);
             }
+
             return null;
         }
 
@@ -242,9 +244,10 @@ trait ArticlaiConnector
      */
     public function getBannerThumbnail(): ?string
     {
-        if (!$this->hasMediaSupport() || app()->environment('testing')) {
+        if (! $this->hasMediaSupport() || app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'thumbnail');
     }
 
@@ -253,9 +256,10 @@ trait ArticlaiConnector
      */
     public function getBannerMedium(): ?string
     {
-        if (!$this->hasMediaSupport() || app()->environment('testing')) {
+        if (! $this->hasMediaSupport() || app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'medium');
     }
 
@@ -264,9 +268,10 @@ trait ArticlaiConnector
      */
     public function getBannerLarge(): ?string
     {
-        if (!$this->hasMediaSupport() || app()->environment('testing')) {
+        if (! $this->hasMediaSupport() || app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner', 'large');
     }
 
@@ -275,9 +280,10 @@ trait ArticlaiConnector
      */
     public function getBannerOriginal(): ?string
     {
-        if (!$this->hasMediaSupport() || app()->environment('testing')) {
+        if (! $this->hasMediaSupport() || app()->environment('testing')) {
             return null;
         }
+
         return $this->getFirstMediaUrl('banner');
     }
 }

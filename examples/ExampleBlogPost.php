@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Articlai\Articlai\Contracts\ArticlaiConnectable;
 use Articlai\Articlai\Traits\ArticlaiConnector;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Example model showing how to connect your existing blog model to Articlai
- * 
+ *
  * This example assumes you have a blog_posts table with the following structure:
  * - id (primary key)
  * - post_title (string)
@@ -26,8 +26,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class ExampleBlogPost extends Model implements ArticlaiConnectable
 {
-    use HasFactory;
     use ArticlaiConnector;
+    use HasFactory;
 
     protected $table = 'blog_posts';
 
@@ -69,7 +69,7 @@ class ExampleBlogPost extends Model implements ArticlaiConnectable
      */
     public function isPublished(): bool
     {
-        return $this->post_status === 'published' && 
+        return $this->post_status === 'published' &&
                ($this->published_date === null || $this->published_date <= now());
     }
 

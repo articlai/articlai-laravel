@@ -14,6 +14,7 @@ use Illuminate\Routing\Controller;
 class ArticlaiController extends Controller
 {
     protected $articlaiService;
+
     protected $modelResolver;
 
     public function __construct(Articlai $articlaiService, ModelResolver $modelResolver)
@@ -47,7 +48,7 @@ class ArticlaiController extends Controller
 
             // Remove banner URLs from data before creating post
             $postData = collect($validatedData)->except([
-                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original'
+                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original',
             ])->toArray();
 
             // Sanitize content if enabled
@@ -100,7 +101,7 @@ class ArticlaiController extends Controller
 
             // Remove banner URLs from data before updating post
             $postData = collect($validatedData)->except([
-                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original'
+                'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original',
             ])->toArray();
 
             // Sanitize content if enabled and content is being updated
@@ -111,7 +112,7 @@ class ArticlaiController extends Controller
             $post = $this->modelResolver->update($post, $postData);
 
             // Update banner image if provided
-            if ($bannerImageUrl && !app()->environment('testing')) {
+            if ($bannerImageUrl && ! app()->environment('testing')) {
                 // Clear existing banner media if the model supports it
                 if (method_exists($post, 'clearMediaCollection')) {
                     $post->clearMediaCollection('banner');
