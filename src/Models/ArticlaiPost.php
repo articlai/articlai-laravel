@@ -97,7 +97,7 @@ class ArticlaiPost extends Model implements ArticlaiConnectable, HasMedia
      */
     protected static function bootInteractsWithMedia()
     {
-        if (! app()->environment('testing')) {
+        if (!app()->environment('testing')) {
             static::bootInteractsWithMediaTrait();
         }
     }
@@ -131,6 +131,11 @@ class ArticlaiPost extends Model implements ArticlaiConnectable, HasMedia
             ->fit(Fit::Crop, 800, 600)
             ->quality(90)
             ->performOnCollections('banner');
+    }
+
+    public function getBannerLink()
+    {
+        return $this->getFirstMediaUrl('banner');
     }
 
     /**
@@ -208,7 +213,7 @@ class ArticlaiPost extends Model implements ArticlaiConnectable, HasMedia
                 ->toMediaCollection('banner');
         } catch (\Exception $e) {
             // Log the error but don't fail the entire operation
-            \Log::warning('Failed to download banner image from URL: '.$url, [
+            \Log::warning('Failed to download banner image from URL: ' . $url, [
                 'error' => $e->getMessage(),
                 'post_id' => $this->id,
             ]);
