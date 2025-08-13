@@ -25,7 +25,7 @@ class CreatePostRequest extends FormRequest
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:1000',
-            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9-]+$/|unique:blogs,slug',
+            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9-]+$/',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'focus_keyword' => 'nullable|string|max:100',
@@ -51,7 +51,7 @@ class CreatePostRequest extends FormRequest
             'title.max' => 'Title must not exceed 255 characters',
             'content.required' => 'Content is required',
             'slug.regex' => 'Slug must contain only lowercase letters, numbers, and hyphens',
-            'slug.unique' => 'This slug is already in use',
+
             'meta_title.max' => 'Meta title must not exceed 255 characters',
             'meta_description.max' => 'Meta description must not exceed 500 characters',
             'focus_keyword.max' => 'Focus keyword must not exceed 100 characters',

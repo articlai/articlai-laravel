@@ -56,6 +56,18 @@ class ModelResolver
     }
 
     /**
+     * Find a model by slug
+     */
+    public function findBySlug(string $slug): ?ArticlaiConnectable
+    {
+        $model = $this->newInstance();
+        $mapping = $model->getArticlaiFieldMapping();
+        $slugField = $mapping['slug'] ?? 'slug';
+
+        return $this->modelClass::where($slugField, $slug)->first();
+    }
+
+    /**
      * Update a model with the given data
      */
     public function update(ArticlaiConnectable $model, array $data): ArticlaiConnectable
@@ -64,6 +76,32 @@ class ModelResolver
         $model->save();
 
         return $model;
+    }
+
+    /**
+     * Create a new model or update existing one if slug already exists
+     */
+    public function upsert(array $data): array
+    {
+        $slug = $data['slug'] ?? null;
+        $wasUpdated = false;
+
+        // If slug is provided, check if a post with this slug already exists
+        if ($slug) {
+            $existingPost = $this->findBySlug($slug);
+            if ($existingPost) {
+                // Update existing post
+                $post = $this->update($existingPost, $data);
+                $wasUpdated = true;
+
+                return ['post' => $post, 'was_updated' => $wasUpdated];
+            }
+        }
+
+        // Create new post
+        $post = $this->create($data);
+
+        return ['post' => $post, 'was_updated' => $wasUpdated];
     }
 
     /**

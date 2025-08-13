@@ -36,7 +36,7 @@ class ArticlaiController extends Controller
     }
 
     /**
-     * Create a new post
+     * Create a new post or update existing one if slug already exists
      */
     public function store(CreatePostRequest $request): JsonResponse
     {
@@ -46,7 +46,7 @@ class ArticlaiController extends Controller
             // Extract banner image URLs
             $bannerImageUrl = $validatedData['banner_image'] ?? $validatedData['banner_original'] ?? null;
 
-            // Remove banner URLs from data before creating post
+            // Remove banner URLs from data before creating/updating post
             $postData = collect($validatedData)->except([
                 'banner_image', 'banner_thumbnail', 'banner_medium', 'banner_large', 'banner_original',
             ])->toArray();
@@ -56,14 +56,22 @@ class ArticlaiController extends Controller
                 $postData['content'] = $this->articlaiService->sanitizeContent($postData['content']);
             }
 
-            $post = $this->modelResolver->create($postData);
+            // Use upsert logic to handle both create and update scenarios
+            $result = $this->modelResolver->upsert($postData);
+            $post = $result['post'];
+            $wasUpdated = $result['was_updated'];
 
             // Add banner image if provided
             if ($bannerImageUrl) {
                 $post->addBannerFromUrl($bannerImageUrl);
             }
 
-            return response()->json(PostResource::created($post), 201);
+            // Return appropriate response based on whether it was created or updated
+            if ($wasUpdated) {
+                return response()->json(PostResource::updated($post), 200);
+            } else {
+                return response()->json(PostResource::created($post), 201);
+            }
         } catch (ArticlaiException $e) {
             return $e->render();
         } catch (\Exception $e) {

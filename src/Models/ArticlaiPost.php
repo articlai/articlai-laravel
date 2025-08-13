@@ -62,7 +62,11 @@ class ArticlaiPost extends Model implements ArticlaiConnectable, HasMedia
         });
 
         static::updating(function ($post) {
-            if ($post->isDirty('title') && config('articlai-laravel.content.auto_generate_slug', true)) {
+            // Only regenerate slug if title changed AND slug is empty
+            // Don't regenerate if slug was explicitly provided (e.g., during upsert)
+            if ($post->isDirty('title') &&
+                empty($post->slug) &&
+                config('articlai-laravel.content.auto_generate_slug', true)) {
                 $post->slug = $post->generateUniqueSlug($post->title);
             }
         });
