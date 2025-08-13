@@ -73,6 +73,23 @@ class ArticlaiPost extends Model implements ArticlaiConnectable, HasMedia
     }
 
     /**
+     * Set the published_at attribute from various date formats
+     */
+    public function setPublishedAtAttribute($value)
+    {
+        if ($value) {
+            // Handle ISO string format from API
+            if (is_string($value)) {
+                $this->attributes['published_at'] = \Carbon\Carbon::parse($value);
+            } else {
+                $this->attributes['published_at'] = $value;
+            }
+        } else {
+            $this->attributes['published_at'] = null;
+        }
+    }
+
+    /**
      * Get the URL for this post (can be overridden in implementation)
      */
     public function getUrlAttribute(): string

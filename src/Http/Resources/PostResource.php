@@ -27,9 +27,8 @@ class PostResource extends JsonResource
             'focus_keyword' => $articlaiData['focus_keyword'] ?? null,
             'canonical_url' => $articlaiData['canonical_url'] ?? null,
             'status' => $articlaiData['status'] ?? null,
-            'published_at' => isset($articlaiData['published_at']) && $articlaiData['published_at']
-                ? $articlaiData['published_at']->toISOString()
-                : null,
+            'published_at' => $this->resource->published_at?->toISOString(),
+            'publish_date' => $this->resource->published_at?->toISOString(),
             'custom_fields' => $articlaiData['custom_fields'] ?: new \stdClass,
             'banner_image' => $articlaiData['banner_image'] ?? null,
             'banner_thumbnail' => $articlaiData['banner_thumbnail'] ?? null,

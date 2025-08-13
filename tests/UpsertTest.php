@@ -131,3 +131,87 @@ it('handles resync through API endpoint correctly', function () {
     expect($updatedPost->content)->toBe('Updated content via API');
     expect($updatedPost->status)->toBe('published');
 });
+
+it('handles publish_date field correctly', function () {
+    $publishDate = '2024-01-15T10:30:00Z';
+
+    $postData = [
+        'title' => 'Post with Publish Date',
+        'content' => 'Content with publish date',
+        'slug' => 'post-with-publish-date',
+        'status' => 'published',
+        'publish_date' => $publishDate,
+    ];
+
+    $response = $this->postJson('/api/articlai/posts', $postData, [
+        'X-API-Key' => 'test-api-key',
+    ]);
+
+    $response->assertStatus(201);
+    $response->assertJson([
+        'title' => 'Post with Publish Date',
+        'status' => 'published',
+    ]);
+
+    // Verify the post was created with the correct publish date
+    $post = ArticlaiPost::where('slug', 'post-with-publish-date')->first();
+    expect($post)->not->toBeNull();
+    expect($post->published_at)->not->toBeNull();
+    expect($post->published_at->format('Y-m-d\TH:i:s\Z'))->toBe($publishDate);
+});
+
+it('handles both published_at and publish_date fields', function () {
+    $publishDate = '2024-02-20T14:45:00Z';
+
+    $postData = [
+        'title' => 'Post with Both Date Fields',
+        'content' => 'Content with both date fields',
+        'slug' => 'post-with-both-dates',
+        'status' => 'published',
+        'published_at' => '2024-01-01T00:00:00Z',
+        'publish_date' => $publishDate, // This should take precedence due to field mapping
+    ];
+
+    $response = $this->postJson('/api/articlai/posts', $postData, [
+        'X-API-Key' => 'test-api-key',
+    ]);
+
+    $response->assertStatus(201);
+
+    // Verify the post was created with the publish_date value
+    $post = ArticlaiPost::where('slug', 'post-with-both-dates')->first();
+    expect($post)->not->toBeNull();
+    expect($post->published_at->format('Y-m-d\TH:i:s\Z'))->toBe($publishDate);
+});
+
+it('includes publish_date in API response', function () {
+    $post = ArticlaiPost::create([
+        'title' => 'Test Post for API Response',
+        'content' => 'Test content',
+        'slug' => 'test-api-response',
+        'status' => 'published',
+        'published_at' => '2024-03-15T12:00:00Z',
+        'custom_fields' => [],
+    ]);
+
+    $response = $this->getJson("/api/articlai/posts/{$post->id}", [
+        'X-API-Key' => 'test-api-key',
+    ]);
+
+    $response->assertStatus(200);
+    $response->assertJsonStructure([
+        'id',
+        'title',
+        'content',
+        'slug',
+        'status',
+        'published_at',
+        'publish_date', // Should be included in response
+        'created_at',
+        'updated_at',
+    ]);
+
+    $responseData = $response->json();
+    expect($responseData['publish_date'])->not->toBeNull();
+    expect($responseData['published_at'])->toBe($responseData['publish_date']); // Should be the same
+});

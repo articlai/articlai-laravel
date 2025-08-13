@@ -40,6 +40,7 @@ class UpdatePostRequest extends FormRequest
             'focus_keyword' => 'nullable|string|max:100',
             'canonical_url' => 'nullable|url|max:500',
             'published_at' => 'nullable|date',
+            'publish_date' => 'nullable|date',
             'custom_fields' => 'nullable|array',
             'status' => 'nullable|string|in:'.implode(',', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
             'banner_image' => 'nullable|url',
@@ -72,6 +73,7 @@ class UpdatePostRequest extends FormRequest
             'banner_large.url' => 'Banner large must be a valid URL',
             'banner_original.url' => 'Banner original must be a valid URL',
             'published_at.date' => 'Published date must be a valid date',
+            'publish_date.date' => 'Publish date must be a valid date',
             'custom_fields.array' => 'Custom fields must be an array',
             'status.in' => 'Status must be one of: '.implode(', ', config('articlai-laravel.content.allowed_statuses', ['draft', 'published'])),
         ];

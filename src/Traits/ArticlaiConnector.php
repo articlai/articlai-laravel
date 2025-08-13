@@ -170,6 +170,7 @@ trait ArticlaiConnector
             'focus_keyword' => 'focus_keyword',
             'canonical_url' => 'canonical_url',
             'published_at' => 'published_at',
+            'publish_date' => 'published_at', // Map publish_date to published_at by default
             'custom_fields' => 'custom_fields',
             'status' => 'status',
         ];
