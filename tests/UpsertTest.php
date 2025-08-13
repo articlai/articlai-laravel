@@ -4,7 +4,7 @@ use Articlai\Articlai\Models\ArticlaiPost;
 use Articlai\Articlai\Services\ModelResolver;
 
 it('creates new post when slug does not exist', function () {
-    $resolver = new ModelResolver();
+    $resolver = new ModelResolver;
 
     $data = [
         'title' => 'Test Post',
@@ -31,7 +31,7 @@ it('updates existing post when slug already exists', function () {
         'status' => 'draft',
     ]);
 
-    $resolver = new ModelResolver();
+    $resolver = new ModelResolver;
 
     $data = [
         'title' => 'Updated Title',
@@ -57,7 +57,7 @@ it('updates existing post when slug already exists', function () {
 });
 
 it('creates new post when no slug provided', function () {
-    $resolver = new ModelResolver();
+    $resolver = new ModelResolver;
 
     $data = [
         'title' => 'Test Post Without Slug',
@@ -82,7 +82,7 @@ it('finds existing post by slug correctly', function () {
         'status' => 'published',
     ]);
 
-    $resolver = new ModelResolver();
+    $resolver = new ModelResolver;
 
     $foundPost = $resolver->findBySlug('existing-post');
 
